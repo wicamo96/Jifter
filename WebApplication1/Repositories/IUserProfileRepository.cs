@@ -8,6 +8,7 @@ namespace Jifter.Repositories
         void Delete(int id);
         List<UserProfile> GetAll();
         UserProfile GetById(int id);
+        List<Post> GetUserPostsWithComments(int id);
         void Update(UserProfile userProfile);
     }
 }

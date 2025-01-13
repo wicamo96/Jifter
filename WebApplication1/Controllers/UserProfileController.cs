@@ -34,6 +34,17 @@ namespace Jifter.Controllers
             return Ok(userProfiles);
         }
 
+        [HttpGet("GetUserPostsWithComments/{id}")]
+        public IActionResult GetUserPostsWithComments(int id)
+        {
+            var posts = _userProfileRepository.GetUserPostsWithComments(id);
+            if (posts == null)
+            {
+                return NotFound();
+            }
+            return Ok(posts);
+        }
+
         // POST api/<UserProfileController>
         [HttpPost]
         public IActionResult Post(UserProfile userProfile)

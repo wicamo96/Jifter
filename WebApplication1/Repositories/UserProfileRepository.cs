@@ -86,6 +86,69 @@ namespace Jifter.Repositories
             }
         }
 
+        public List<Post> GetUserPostsWithComments(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT
+                        P.Id AS [PostId],
+                        P.Title,
+                        P.ImageUrl,
+                        P.Caption,
+                        P.DateCreated,
+                        C.Id AS [CommentId],
+                        C.Message AS [CommentMessage],
+                        C.UserProfileId AS [CommentUserId],
+                        C.PostId AS [CommentPostId]
+                        FROM Post P
+                        INNER JOIN Comment C
+                        ON C.PostId = P.Id
+                        WHERE P.UserProfileId = @Id";
+
+                    DbUtils.AddParameter(cmd, "Id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    List<Post> userPosts = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        Post post = new Post()
+                        {
+                            Id = DbUtils.GetInt(reader, "PostId"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            ImageUrl = DbUtils.GetString(reader, "ImageUrl"),
+                            Caption = DbUtils.GetString(reader, "Caption"),
+                            DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
+                            UserProfileId = id,
+                            Comments = new List<Comment> ()
+                        };
+
+                        if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                        {
+                            post.Comments.Add(new Comment()
+                            {
+                                Id = DbUtils.GetInt(reader, "CommentId"),
+                                Message = DbUtils.GetString(reader, "CommentMessage"),
+                                UserProfileId = DbUtils.GetInt(reader, "CommentUserId"),
+                                PostId = DbUtils.GetInt(reader, "CommentPostId")
+                            });
+                        }
+
+                        userPosts.Add(post);
+                    }
+
+                    reader.Close();
+
+                    return userPosts;
+                }
+            }
+        }
+
         public void Add(UserProfile userProfile)
         {
             using (var conn = Connection)
