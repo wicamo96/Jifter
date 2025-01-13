@@ -22,6 +22,16 @@ namespace Jifter.Controllers
         {
             return Ok(_postRepository.GetAll());
         }
+        [HttpGet("GetByIdWithComments/{id}")]
+        public IActionResult GetByIdWithComments(int id)
+        {
+            var post = _postRepository.GetByIdWithComments(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return Ok(post);
+        }
 
         [HttpGet("GetWithComments")]
         public IActionResult GetWithComments()

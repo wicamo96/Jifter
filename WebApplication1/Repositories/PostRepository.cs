@@ -1,5 +1,6 @@
 ﻿using Jifter.Models;
 using Jifter.Utils;
+using Microsoft.Extensions.Options;
 
 namespace Jifter.Repositories
 {
@@ -51,6 +52,79 @@ namespace Jifter.Repositories
                     reader.Close();
 
                     return posts;
+                }
+            }
+        }
+
+        public Post GetByIdWithComments(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT 
+                        P.Title AS [Title], 
+	                    P.Caption AS [Caption], 
+	                    P.DateCreated AS [DatePostCreated], 
+	                    P.ImageUrl AS [PostImage], 
+	                    P.UserProfileId, 
+	                    UP.Name AS [UserName], 
+	                    UP.Email AS [UserEmail], 
+	                    UP.ImageUrl AS [UserImage], 
+	                    UP.DateCreated AS [DateProfileCreated],
+                        C.Id AS [CommentId],
+                        C.Message AS [CommentMessage],
+                        C.UserProfileId AS [CommenterProfileId]
+                        FROM Post P
+                        INNER JOIN UserProfile UP
+                        ON UP.Id = P.UserProfileId
+                        INNER JOIN Comment C
+                        ON C.PostId = P.Id
+                        WHERE P.Id = @Id";
+
+                    DbUtils.AddParameter(cmd, "Id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    Post post = null;
+                    if (reader.Read())
+                    {
+                        post = new Post()
+                        {
+                            Id = id,
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Caption = DbUtils.GetString(reader, "Caption"),
+                            DateCreated = DbUtils.GetDateTime(reader, "DatePostCreated"),
+                            ImageUrl = DbUtils.GetString(reader, "PostImage"),
+                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                            UserProfile = new UserProfile()
+                            {
+                                Id = id,
+                                Name = DbUtils.GetString(reader, "UserName"),
+                                Email = DbUtils.GetString(reader, "UserEmail"),
+                                ImageUrl = DbUtils.GetString(reader, "UserImage"),
+                                DateCreated = DbUtils.GetDateTime(reader, "DateProfileCreated")
+                            },
+                            Comments = new List<Comment> ()
+                        };
+
+                        if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                        {
+                            post.Comments.Add(new Comment()
+                            {
+                                Id = DbUtils.GetInt(reader, "CommentId"),
+                                Message = DbUtils.GetString(reader, "CommentMessage"),
+                                UserProfileId = DbUtils.GetInt(reader, "CommenterProfileId"),
+                                PostId = id
+                            });
+                        }
+                    }
+
+                    reader.Close();
+
+                    return post;
                 }
             }
         }
@@ -134,9 +208,20 @@ namespace Jifter.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            SELECT Title, Caption, DateCreated, ImageUrl, UserProfileId
-                            FROM Post
-                            WHERE Id = @Id";
+                            SELECT 
+                            P.Title AS [Title], 
+	                        P.Caption AS [Caption], 
+	                        P.DateCreated AS [DatePostCreated], 
+	                        P.ImageUrl AS [PostImage], 
+	                        P.UserProfileId, 
+	                        UP.Name AS [UserName], 
+	                        UP.Email AS [UserEmail], 
+	                        UP.ImageUrl AS [UserImage], 
+	                        UP.DateCreated AS [DateProfileCreated]
+                            FROM Post P
+                            INNER JOIN UserProfile UP
+                            ON UP.Id = P.UserProfileId
+                            WHERE P.Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
@@ -150,9 +235,17 @@ namespace Jifter.Repositories
                             Id = id,
                             Title = DbUtils.GetString(reader, "Title"),
                             Caption = DbUtils.GetString(reader, "Caption"),
-                            DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
-                            ImageUrl = DbUtils.GetString(reader, "ImageUrl"),
-                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId")
+                            DateCreated = DbUtils.GetDateTime(reader, "DatePostCreated"),
+                            ImageUrl = DbUtils.GetString(reader, "PostImage"),
+                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                            UserProfile = new UserProfile()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserProfileId"),
+                                Name = DbUtils.GetString(reader, "UserName"),
+                                Email = DbUtils.GetString(reader, "UserEmail"),
+                                ImageUrl = DbUtils.GetString(reader, "UserImage"),
+                                DateCreated = DbUtils.GetDateTime(reader, "DateProfileCreated")
+                            }
                         };
                     }
 
