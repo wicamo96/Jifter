@@ -94,12 +94,14 @@ namespace Jifter.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        INSERT INTO UserProfile (Name, Email, ImageUrl)
-                        VALUES (@Name, @Email, @ImageUrl)";
+                        INSERT INTO UserProfile (Name, Email, ImageUrl, DateCreated)
+                        OUTPUT INSERTED.ID
+                        VALUES (@Name, @Email, @ImageUrl, @DateCreated)";
 
                     DbUtils.AddParameter(cmd, "Name", userProfile.Name);
                     DbUtils.AddParameter(cmd, "Email", userProfile.Email);
                     DbUtils.AddParameter(cmd, "ImageUrl", userProfile.ImageUrl);
+                    DbUtils.AddParameter(cmd, "DateCreated", userProfile.DateCreated);
 
                     userProfile.Id = (int)cmd.ExecuteScalar();
                 }
