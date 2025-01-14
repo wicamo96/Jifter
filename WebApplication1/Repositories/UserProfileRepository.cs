@@ -105,7 +105,7 @@ namespace Jifter.Repositories
                         C.UserProfileId AS [CommentUserId],
                         C.PostId AS [CommentPostId]
                         FROM Post P
-                        INNER JOIN Comment C
+                        LEFT JOIN Comment C
                         ON C.PostId = P.Id
                         WHERE P.UserProfileId = @Id";
 
