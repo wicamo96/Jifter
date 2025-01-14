@@ -1,4 +1,6 @@
 
+using Jifter.Repositories;
+
 namespace WebApplication1
 {
     public class Program
@@ -10,6 +12,8 @@ namespace WebApplication1
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddTransient<IPostRepository, PostRepository>();
+            builder.Services.AddTransient<IUserProfileRepository, UserProfileRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
