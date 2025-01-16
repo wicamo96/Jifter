@@ -10,6 +10,8 @@ namespace Jifter.Repositories
         Post GetByIdWithComments(int id);
         List<Post> GetAllWithComments();
         Post GetById(int id);
+        List<Post> Search(string criterion, bool sortDescending);
+        List<Post> Hottest(DateTime date);
         void Update(Post post);
     }
 }
