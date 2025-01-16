@@ -52,6 +52,18 @@ namespace Jifter.Controllers
             return Ok(post);
         }
 
+        [HttpGet("search")]
+        public IActionResult Search(string q, bool sortDesc)
+        {
+            return Ok(_postRepository.Search(q, sortDesc));
+        }
+
+        [HttpGet("hottest")]
+        public IActionResult Hottest(DateTime date)
+        {
+            return Ok(_postRepository.Hottest(date));
+        }
+
         // POST api/<PostController>
         [HttpPost]
         public void Post([FromBody] string value)
