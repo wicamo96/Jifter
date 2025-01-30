@@ -15,6 +15,14 @@ export const Post = ({ post }) => {
           </Link>
         </p>
         <p>{post.caption}</p>
+        <strong>Comments: </strong>
+        {post.comments.length > 0 ? 
+        post.comments.map(comment => {
+          return <p>{comment.message}</p>
+        })
+        :
+        <></>
+        }
       </CardBody>
     </Card>
   );

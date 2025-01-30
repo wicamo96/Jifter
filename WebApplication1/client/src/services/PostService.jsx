@@ -1,7 +1,7 @@
 const baseUrl = 'https://localhost:5001/api/Post';
 
 export const getAllPosts = () => {
-  return fetch(baseUrl) 
+  return fetch(`${baseUrl}/GetWithComments`) 
     .then((res) => res.json())
 };
 
