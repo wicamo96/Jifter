@@ -25,6 +25,12 @@ namespace WebApplication1
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseCors(options =>
+                {
+                    options.AllowAnyOrigin();
+                    options.AllowAnyMethod();
+                    options.AllowAnyHeader();
+                });
             }
 
             app.UseHttpsRedirection();

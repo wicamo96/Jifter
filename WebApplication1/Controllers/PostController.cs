@@ -65,9 +65,13 @@ namespace Jifter.Controllers
         }
 
         // POST api/<PostController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("Add")]
+        public IActionResult Add(Post post)
         {
+            post.DateCreated = DateTime.Now;
+            post.UserProfileId = 1;
+            _postRepository.Add(post);
+            return NoContent();
         }
 
         // PUT api/<PostController>/5
