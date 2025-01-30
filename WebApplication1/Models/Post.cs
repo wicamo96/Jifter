@@ -14,7 +14,7 @@ namespace Jifter.Models
         public DateTime DateCreated { get; set; }
         [Required]
         public int UserProfileId { get; set; }
-        public UserProfile UserProfile { get; set; }
-        public List<Comment> Comments { get; set; }
+        public UserProfile? UserProfile { get; set; }
+        public List<Comment>? Comments { get; set; }
     }
 }

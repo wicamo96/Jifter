@@ -6,7 +6,7 @@ export const getAllPosts = () => {
 };
 
 export const addPost = (singlePost) => { 
-  return fetch(baseUrl, {
+  return fetch(`${baseUrl}/Add`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,3 +14,8 @@ export const addPost = (singlePost) => {
     body: JSON.stringify(singlePost),
   });
 };
+
+export const searchPosts = (query) => {
+  return fetch(`${baseUrl}/search?q=${query}`)
+    .then(res => res.json())
+}
