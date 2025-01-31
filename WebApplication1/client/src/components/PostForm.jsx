@@ -1,9 +1,16 @@
 import { useState } from "react"
 import { Button, Card, CardBody, CardTitle } from "reactstrap"
 import { addPost } from "../services/PostService.jsx"
+import { useNavigate } from "react-router-dom"
 
-export const PostForm = ({ getPosts }) => {
+export const PostForm = () => {
     const [post, setPost] = useState({})
+    
+    const navigate = useNavigate()
+
+    const submitPost = () => {
+        addPost(post).then(navigate('/'))
+    }
 
     return (
         <Card className="m-4">
@@ -28,11 +35,7 @@ export const PostForm = ({ getPosts }) => {
                                                                     }}
                 ></input><br />
                 <Button onClick={() => {
-                                        addPost(post)
-                                        getPosts()
-                                        document.getElementById("postTitle").value = ''
-                                        document.getElementById("postImageUrl").value = ''
-                                        document.getElementById("postCaption").value = ''
+                                        submitPost()
                                         }}
                 >Submit</Button>
             </CardBody>

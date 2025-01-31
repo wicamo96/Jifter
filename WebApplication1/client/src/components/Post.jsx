@@ -11,7 +11,7 @@ export const Post = ({ post }) => {
       <CardBody>
         <p>
           <Link to={`/posts/${post.id}`}>
-          <strong>{post.title}</strong>
+            <strong>{post.title}</strong>
           </Link>
         </p>
         <p>{post.caption}</p>

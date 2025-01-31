@@ -1,16 +1,18 @@
 import React from "react";
 import "./index.css";
-import { PostList } from "./components/PostList";
 import { BrowserRouter } from 'react-router-dom'
+import { ApplicationViews } from "./components/ApplicationViews.jsx";
+import { Header } from "./components/Header.jsx";
 
 function App() {
- return (
-<>
-<BrowserRouter>
-    <PostList />
-  </BrowserRouter>
-</>
-)
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <Header />
+        <ApplicationViews />
+      </BrowserRouter>
+    </div>
+  )
 }
 
 export default App;
