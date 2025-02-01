@@ -100,6 +100,10 @@ namespace Jifter.Repositories
                         P.ImageUrl,
                         P.Caption,
                         P.DateCreated,
+                        UP.Name AS [UserName],
+                        UP.Email AS [UserEmail],
+                        UP.ImageUrl AS [UserImage],
+                        UP.DateCreated AS [DateProfileCreated],
                         C.Id AS [CommentId],
                         C.Message AS [CommentMessage],
                         C.UserProfileId AS [CommentUserId],
@@ -107,6 +111,8 @@ namespace Jifter.Repositories
                         FROM Post P
                         LEFT JOIN Comment C
                         ON C.PostId = P.Id
+                        INNER JOIN UserProfile UP
+                        ON UP.ID = P.UserProfileId
                         WHERE P.UserProfileId = @Id";
 
                     DbUtils.AddParameter(cmd, "Id", id);
@@ -125,6 +131,13 @@ namespace Jifter.Repositories
                             Caption = DbUtils.GetString(reader, "Caption"),
                             DateCreated = DbUtils.GetDateTime(reader, "DateCreated"),
                             UserProfileId = id,
+                            UserProfile = new UserProfile()
+                            {
+                                Name = DbUtils.GetString(reader, "UserName"),
+                                Email = DbUtils.GetString(reader, "UserEmail"),
+                                ImageUrl = DbUtils.GetString(reader, "UserImage"),
+                                DateCreated = DbUtils.GetDateTime(reader, "DateProfileCreated")
+                            },                            
                             Comments = new List<Comment> ()
                         };
 
